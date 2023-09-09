@@ -37,4 +37,4 @@ Moreover, we found that **the sources for ENSO predictability at different lead 
 
 ## Plot
 
-Drawing scripts
+Scripts for drawing figures
