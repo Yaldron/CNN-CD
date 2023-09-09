@@ -25,13 +25,13 @@ Moreover, we found that **the sources for ENSO predictability at different lead 
 
 * [Build_CNN-CD.py]
 
-    The script builds and trains the CNN-CD model.
+    Construction of the CNN-CD model.
 * [Transfer_CNN-CD.py]
 
-    The script performs the transfer learning.
+    Transfer learning.
 * [Obtain_ActivationMap.py]
 
-    The script used to obatin the heatvalues in the activation map.
+    Calculation of the heatvalues in the activation map.
 
 ## Plot
 
