@@ -6,7 +6,7 @@ Most deep learning models focused on forecasting ENSO indices while the zonal di
 
 <p align="center"><img src="https://github.com/Yaldron/CNN-CD/blob/main/Overview_of_CNN-CD.png"></p>
 
-Moreover, we found that **the sources for ENSO predictability at different lead times are distinct**. For the 10-month-lead predictions, the precursors in the north Pacific, south Pacific and tropical Atlantic play critical roles in determining the model behaviors; while for the 16-month-lead predictions, the initial signals in the tropical Pacific associated with the discharge-recharge cycle are essential. 
+Moreover, we found that **the sources for ENSO predictability at different lead times are distinct**. For the 10-month-lead predictions, the precursors **NPMM, SPQ and SSTA over tropical Atlantic** play critical roles in determining the model behaviors; while for the 16-month-lead predictions, the **initial signals in the tropical Pacific associated with the discharge-recharge cycle** are essential. 
 
 ## Data
 
