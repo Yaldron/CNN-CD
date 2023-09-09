@@ -8,7 +8,7 @@ Moreover, we found that **the sources for ENSO predictability at different lead 
 
 ## Data
 
-* [Train/Trans/Valid]
+* [Train, Trans, Valid]
 
       Data used in the training, transfer-learning, validtion stages.
 * [HeatValue]
