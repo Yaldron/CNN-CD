@@ -1,0 +1,1 @@
+anom_detrend_sst_ERSSTv5_198001-201812_1x1.nc filter=lfs diff=lfs merge=lfs -text
