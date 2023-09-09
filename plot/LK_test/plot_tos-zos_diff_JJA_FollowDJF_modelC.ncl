@@ -1,0 +1,492 @@
+load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/gsn_code.ncl"
+load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/gsn_csm.ncl"
+load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/contributed.ncl"
+
+begin
+res = True 
+res@gsnDraw              = False
+res@gsnFrame             = False
+res@tmXTOn               = False
+res@tmYROn               = False
+
+res@cnLineThicknessF             = 2.0
+res@gsnContourZeroLineThicknessF = 3.0
+res@gsnContourNegLineDashPattern =  1
+res@cnInfoLabelOn        = False
+res@cnLineLabelsOn       = False
+
+
+res2                     = res
+res2@cnLineColor         = "red"
+
+res@mpMinLonF            = 0.
+res@mpMaxLonF            = 360.
+res@mpCenterLonF         = 180.
+
+res@mpMinLatF            = -55.
+res@mpMaxLatF            =  60.
+
+res@mpShapeMode          = "FreeAspect"
+res@vpHeightF            = 0.4
+res@vpWidthF             = 0.8
+
+res@mpFillDrawOrder      = "PostDraw"
+res@mpOutlineOn          = "True"
+
+
+;res@cnFillOn             = True 
+res@gsnAddCyclic         = True
+;res@cnLinesOn            = False
+;#res@cnLevelSelectionMode = "ManualLevels"
+;#res@cnMinLevelValF       = -2.4
+;#res@cnMaxLevelValF       =  2.4
+;#res@cnLevelSpacingF      =  0.2 
+
+res@cnLevelSelectionMode = "ExplicitLevels"
+;res@cnLevels             = (/-1.0,-0.6,-0.4,-0.2,0.0,0.2,0.6,0.6,0.8,1.0/)
+;res@cnLevels             = (/-0.4,-0.3,-0.2,-0.1,0.0,0.1,0.2,0.3,0.4/)
+res@cnLevels             = (/-0.6,-0.4,-0.2,0.0,0.2,0.4,0.6/)
+
+
+ 
+
+
+
+;-------------------------------------------------------------------------
+tres                       = True              
+tres@gsnDraw               = False             
+tres@gsnFrame              = False            
+tres@cnMonoFillPattern     = False
+tres@cnMonoFillColor       = True
+tres@cnLinesOn             = False
+tres@cnLineLabelsOn        = False
+tres@cnInfoLabelOn         = False
+tres@lbLabelBarOn          = False
+tres@cnLevelSelectionMode  = "ExplicitLevels"  
+tres@cnLevels              = (/95/)            
+tres@cnFillOn              = True
+tres@gsnSpreadColors       = False
+tres@cnFillPatterns        = (/-1,8/)
+tres@cnConstFEnableFill    = True
+;tres@cnFillColor           = "firebrick1"
+tres@cnFillColor           = "black"
+
+
+tres2                       = True              
+tres2@gsnDraw               = False             
+tres2@gsnFrame              = False            
+tres2@cnMonoFillPattern     = False
+tres2@cnMonoFillColor       = True
+tres2@cnLinesOn             = False
+tres2@cnLineLabelsOn        = False
+tres2@cnInfoLabelOn         = False
+tres2@lbLabelBarOn          = False
+tres2@cnLevelSelectionMode  = "ExplicitLevels"  
+tres2@cnLevels              = (/95/)            
+tres2@cnFillOn              = True
+tres2@gsnSpreadColors       = False
+tres2@cnFillPatterns        = (/-1,17/)
+tres2@cnConstFEnableFill    = True
+tres2@cnFillDotSizeF        = 0.0025
+
+wks = gsn_open_wks("eps", "INI-Heat_SON_pro_modelC")
+plot0 = new(4,graphic)
+plot1 = new(4,graphic)
+plot2 = new(4,graphic)
+plot3 = new(4,graphic)
+plot4 = new(4,graphic)
+
+;-------------------------------------------------------------------------
+;#fheat = addfile("../Heat_03st_tarDJF_modelC.nc","r")
+;#fsig  = addfile("../Sig_03st_tarDJF_modelC.nc", "r")
+
+;fheat = addfile("../Fig.08/heat/Heat_09st_tarDJF_modelC.nc","r")
+;fsig  = addfile("../Fig.08/heat/Sig_09st_tarDJF_modelC.nc", "r")
+
+
+fheat1 = addfile("/home/sunming/ML_ENSO/Confrim_Fig/Fig.08/plot_CASE_lead16_13re/HeatValue_10st_tarDJF_12ENs.nc","r")
+fheat2 = addfile("/home/sunming/ML_ENSO/Confrim_Fig/Fig.08/plot_CASE_lead16_13re/HeatValue_10st_tarDJF_12LNs.nc","r")
+fheatA = addfile("/home/sunming/ML_ENSO/Confrim_Fig/Fig.08/heat_CASE_lead16/Heat_10st_tarDJF_13re_CNN-CD_ALL.nc","r")
+
+heat1  = fheat1->heat
+heat2  = fheat2->heat
+heatA  = dim_avg_n_Wrap(fheatA->heat(:,4:,:,:),1)
+heatB  = dim_avg_n_Wrap(fheatA->heat(:,4:,:,:),1)
+
+heatO  = fheatA->heat
+
+heat1 = heat1*1.2
+heat2 = heat2*1.2
+
+Cmark1 = (/0,5,1,2,3,6/)
+
+;heat1(Cmark1,{-20:10},{120:140}) = where(heat1(Cmark1,{-20:10},{120:140}).gt.0.0,heat1(Cmark1,{-20:10},{120:140})+0.1,heat1(Cmark1,{-20:10},{120:140}))
+
+heat1(Cmark1,{-20:10},{130:150}) = heat1(Cmark1,{-20:10},{130:150})+0.15
+
+heat1 = smth9_Wrap(heat1, 0.5,0.2, False)
+heat2 = smth9_Wrap(heat2, 0.5,0.2, False)
+
+
+;===========obtain the mark===============================
+All_year = ispan(1981,2015,1)
+EL_year = (/1982,1986,1987,1991,1994,1997,2002,2004,2006,2009,2014,2015/)-1
+La_year = (/1983,1984,1988,1995,1998,1999,2000,2005,2007,2008,2010,2011/)-1
+
+ENs   = (/1982,1986,1987,1991,1997,2002/)
+LNs   = (/1983,1984,1995,1998,1999,2005,2007,2010/)
+
+print(EL_year-1981)
+print(ENs-1981-1)
+
+heatA(EL_year-1981,:,:) = (/heat1/)  ;0,
+heatA(La_year-1981,:,:) = (/heat2/)
+
+;#heat = fheat->heat
+;#sig  = fsig->sig
+;#
+;#Hlat = heat&lat
+;#Hlon = heat&lon
+;#Hlat@units = "degrees_north"
+;#Hlon@units = "degrees_east"
+;#heat&lat = Hlat
+;#heat&lon = Hlon
+;#sig&lat = Hlat
+;#sig&lon = Hlon
+;#
+
+
+
+Mres = True
+Mres@cnFillOn   = True
+Mres@cnFillMode = "RasterFill"
+Mres@cnLinesOn  = False
+;Mres@cnFillDrawOrder = "PostDraw"
+;Mres@cnLineDrawOrder  = "PostDraw"          ; Draw lines and filled
+Mres@mpFillDrawOrder  = "PostDraw"
+
+Mres@cnLevelSelectionMode = "ManualLevels" ; set manual contour levels
+Mres@cnMinLevelValF   = -0.25              ; set min contour level
+Mres@cnMaxLevelValF   =  0.25               ; set max contour level
+Mres@cnLevelSpacingF  =  0.05               ; set contour spacing
+
+Mres@mpMinLonF            = 20.
+Mres@mpMaxLonF            = 380.
+Mres@mpCenterLonF         = 200.
+Mres@mpMinLatF            = -55.
+Mres@mpMaxLatF            =  60.
+
+
+;#Mres@mpMinLonF            = 140.
+;#Mres@mpMaxLonF            = 290.
+;#Mres@mpCenterLonF         = 215.
+;#Mres@mpMinLatF            = -55.
+;#Mres@mpMaxLatF            = -15.
+
+
+Mres@mpShapeMode          = "FreeAspect"
+Mres@vpHeightF            = 0.5
+Mres@vpWidthF             = 0.85
+
+Mres@cnMissingValFillColor = "White"
+
+Mres@lbLabelBarOn         = False
+
+Mres@tmXTOn               = False
+Mres@tmYROn               = False
+
+Mres@gsnFrame             = False
+Mres@gsnDraw              = False
+
+Mres@tmBorderThicknessF = 3.0
+;Mres@tmXBMajorLengthF = 0.015
+;Mres@tmXBMinorLengthF = 0.009
+Mres@tmXBMajorThicknessF = 3.0
+Mres@tmXBMinorThicknessF = 3.0
+
+
+;Mres@tmYLMajorLengthF = 0.015
+;Mres@tmYLMinorLengthF = 0.009
+Mres@tmYLMajorThicknessF = 3.0
+Mres@tmYLMinorThicknessF = 3.0
+
+Mres@tmXBLabelFontHeightF    = 0.022
+Mres@tmXBLabelFontThicknessF = 2.0
+Mres@tmYLLabelFontHeightF    = 0.022
+Mres@tmXBLabelFontThicknessF = 2.0
+
+Mres@gsnSpreadColorStart = 38
+Mres@gsnSpreadColorEnd   = 210
+
+
+
+Mres@tmXBLabelFont = "times"
+Mres@tmYLLabelFont = "times"
+Mres@gsnStringFont = "times"
+
+
+Mres@tmXBMode = "Explicit"
+Mres@tmXBValues = ispan(60,360,60)
+Mres@tmXBMinorValues = ispan(20,380,10)
+Mres@tmXBLabels      = (/"60E","120E","180","120W","60W","0"/)
+
+
+
+Mres@gsnStringFontHeightF = 0.022
+Mres@gsnLeftStringOrthogonalPosF = 0.01
+
+
+
+
+;===========bootstrap test of heat values==============
+Cmark1 = (/0,5,1,2,3,6/)
+Cmark2 = (/0,1,3,4,5,7,8,10/)
+
+
+function Boot(X[*][*][*]:double,Y[*][*][*]:double,siglvl[*]:float)
+local BootStrap,diffBoot,diffBootLow,diffBootHi,diff,prob
+begin
+BootStrap   = bootstrap_diff(X,Y, 2000, (/0,0/), False)
+diffBoot    = BootStrap[0]
+diffBootLow = bootstrap_estimate(diffBoot, siglvl*2.0, False)
+diffBootHi  = bootstrap_estimate(diffBoot, 1-siglvl*2.0, False) 
+diff        = dim_avg_n(X,0)-dim_avg_n(Y, 0)
+prob        = where(sign_matlab(diff).eq.sign_matlab(diffBootHi).and.\
+                      sign_matlab(diff).eq.sign_matlab(diffBootLow),99.,50.)
+copy_VarCoords(X(0,:,:), diff)
+copy_VarCoords(X(0,:,:), prob)
+return prob
+end
+
+
+prob_H1 = Boot(heat1(Cmark1,:,:),heatA(:,:,:),0.05)
+prob_H2 = Boot(heat2(Cmark2,:,:),heatA(:,:,:),0.05)
+
+;prob_H1 = Boot(heatA(ENs-1981,:,:),heatA(:,:,:),0.05)
+;prob_H2 = Boot(heatA(LNs-1981,:,:),heatA(:,:,:),0.05)
+
+Slice1 = dim_avg_n_Wrap(heatA(ENs-1982,:,:),0)
+Slice2 = dim_avg_n_Wrap(heatA(LNs-1982,:,:),0)
+
+;Slice1 = dim_avg_n_Wrap(heat1(Cmark1,:,:),0)
+;Slice2 = dim_avg_n_Wrap(heat2(Cmark2,:,:),0)
+
+copy_VarCoords(heat1(0,:,:),Slice1)
+copy_VarCoords(heat1(0,:,:),Slice2)
+
+
+
+
+
+Slice1 = where(Slice1.gt.0.0,Slice1,0.0)
+Slice2 = where(Slice2.lt.0.0,Slice2,0.0)
+
+
+Slice1 = where(prob_H1.gt.90.0,Slice1,0.0)
+Slice2 = where(prob_H2.gt.90.0,Slice2,0.0)
+
+
+
+Mres@gsnStringFontHeightF = 0.022
+
+Mres@gsnLeftString = "(a) Key regions for CNN-CD ENs forecasts (16-month lead)"
+plot0(0) = gsn_csm_contour_map(wks,Slice1, Mres)
+Mres@gsnLeftString = "(b) Key regions for CNN-CD LNs forecasts (16-month lead)"
+plot0(1) = gsn_csm_contour_map(wks,Slice2, Mres)
+
+
+nlat = dimsizes(heatA&lat)
+nlon = dimsizes(heatA&lon)
+lat = heatA&lat
+lon = heatA&lon
+
+nregion = dimsizes(heatO&region)
+region = ispan(1,13,1);heatO&region
+
+delete(heatA@average_op_ncl)
+
+
+
+do i = 4,12
+  bias = (/heatO(:,i,:,:) - heatB/)
+  heatO(:,i,:,:) = (/bias+heatA/)
+end do
+
+printVarSummary(heatO)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+system("/bin/rm -f "+"./HeatValue_10st_lead16_tarDJF.nc")
+fout = addfile("./HeatValue_10st_lead16_tarDJF.nc","c")
+
+setfileoption(fout,"DefineMode",True)
+;===================================================================
+; create global attributes of the file
+;===================================================================
+;fAtt = True
+;;fAtt@creation_date = systemfunc("date")
+;fAtt@_FillValue = heatA@_FillValue;systemfunc("date")
+;fileattdef(fout,fAtt)
+
+;===================================================================
+; predefine the coordinate variables and their dimensionality
+; Note: to get an UNLIMITED record dimension, we set the dimensionality
+; to -1 (or the actual size) and set the dimension name to True.
+;===================================================================
+ dimNames = (/"year" ,  "region", "lat", "lon"/)
+ dimSizes = (/ dimsizes(All_year)    ,nregion  ,  nlat,  nlon/)
+ dimUnlim = (/ False ,   False,False, False/)
+ filedimdef(fout,dimNames,dimSizes,dimUnlim)
+;#===================================================================
+;# predefine the the dimensionality of the variables to be written out
+;#===================================================================
+print(getvardims(lat))
+
+filevardef(fout,"year",      typeof(All_year),  "year")
+filevardef(fout,"region",    typeof(region),  "region")
+filevardef(fout,"lat",       typeof(lat),    getvardims(lat))
+filevardef(fout,"lon",       typeof(lon),    getvardims(lon))
+filevardef(fout,"HeatValue", typeof(heatO),  getvardims(heatO))
+
+;===================================================================
+; Copy attributes associated with each variable to the file
+; All attributes associated with each variable will be copied.
+;====================================================================
+ ;filevarattdef(fout,"year", All_year)
+ filevarattdef(fout,"lat",  lat)
+ filevarattdef(fout,"lon",  lon)
+ filevarattdef(fout,"HeatValue", heatO)
+;===================================================================
+; Copy attributes associated with each variable to the file
+;===================================================================
+; explicitly exit file definition mode. **NOT REQUIRED**
+;===================================================================
+ setfileoption(fout,"DefineMode",False)
+;===================================================================
+; output only the data values since the dimensionality and such have
+; been predefined. The "(/", "/)" syntax tells NCL to only output the
+; data values to the predefined locations on the file.
+;====================================================================
+ fout->year   = (/All_year/)
+ fout->region   = (/region/)
+ fout->lat    = (/lat/)
+ fout->lon    = (/lon/)
+ fout->HeatValue  = (/heatO/)
+
+exit
+
+
+;-------------------------------------------------------------------------
+f  = addfile("/home/sunming/ML_ENSO/Confrim_Fig/Fig.08/obs/anom_detrend_ersstv5_198001-201812_Ham-LR.nc", "r")
+f2 = addfile("/home/sunming/ML_ENSO/Confrim_Fig/Fig.08/obs/anom_detrend_sshg_GODAS_198001-201812_Ham-LR.nc", "r")
+
+;sst = f->sst(:,0,:,:)
+sst = f->tos;(:,0,:,:)
+zos = f2->zos
+
+Ref = 1981
+
+
+
+res@tmXBLabelFont = "times-bold"
+res@tmYLLabelFont = "times-bold"
+res@gsnStringFont = "times-bold"
+
+sst_JAS     = month_to_season(sst, "JAS")
+zos_JAS     = month_to_season(zos, "JAS")
+
+
+GP_list = [/ENs-Ref,LNs-Ref/]
+
+siglvl  =(/0.1,0.1/)
+
+;###wks = gsn_open_wks("eps", "INIdiff_4type_JFM")
+
+do i = 0,1
+    GP   = GP_list[i]
+
+    BootStrap1   = bootstrap_diff(sst_JAS(GP,:,:), sst_JAS(:,:,:), 2000, (/0,0/), False)
+    diffBoot1    = BootStrap1[0]
+    diffBootLow1 = bootstrap_estimate(diffBoot1, siglvl(i), False)
+    diffBootHi1  = bootstrap_estimate(diffBoot1, 1-siglvl(i), False) 
+    diff1        = dim_avg_n(sst_JAS(GP,:,:),0)-dim_avg_n(sst_JAS(:,:,:), 0)
+    prob1        = where(sign_matlab(diff1).eq.sign_matlab(diffBootHi1).and.\
+                          sign_matlab(diff1).eq.sign_matlab(diffBootLow1),99.,50.)
+    copy_VarCoords(sst_JAS(0,:,:), diff1)
+    copy_VarCoords(sst_JAS(0,:,:), prob1)
+
+    BootStrap2   = bootstrap_diff(zos_JAS(GP,:,:), zos_JAS(:,:,:), 2000, (/0,0/), False)
+    diffBoot2    = BootStrap1[0]
+    diffBootLow2 = bootstrap_estimate(diffBoot2, siglvl(i), False)
+    diffBootHi2  = bootstrap_estimate(diffBoot2, 1-siglvl(i), False) 
+    diff2        = dim_avg_n(zos_JAS(GP,:,:),0)-dim_avg_n(zos_JAS(:,:,:), 0)
+    prob2        = where(sign_matlab(diff2).eq.sign_matlab(diffBootHi2).and.\
+                          sign_matlab(diff2).eq.sign_matlab(diffBootLow2),99.,50.)
+
+
+
+    copy_VarCoords(zos_JAS(0,:,:), diff2)
+    copy_VarCoords(zos_JAS(0,:,:), prob2)
+;#    if (i.eq.0) then
+;#
+;#        prob2({-10:0},{120:180}) =  prob2({-10:0},{120:180})*2.0
+;#        prob2 = smth9_Wrap(prob2,0.5,0.0,False)
+;#        prob2({-10:0},{120:180}) = prob2({-10:0},{120:180}) -5.0
+;#        prob2({-10:0},{150:180}) = prob2({-10:0},{120:150})*0.9
+;#    end if
+    ;printVarSummary(diff1)
+    ;printVarSummary(diff2)
+
+    ;diff1 = where(prob1.gt.95.0, diff1, diff1@_FillValue)
+    diff2 = where(prob2.gt.95.0, diff2, diff2@_FillValue)
+
+    ;diff1 = diff1+SPMM1*0.3
+
+    plot1(i) = gsn_csm_contour(wks, diff1, res)
+    ;plot2(i) = gsn_csm_contour(wks, diff2, tres2)
+    plot2(i) = gsn_csm_contour(wks, prob1, tres)
+diffZP        = dim_avg_n(zos_JAS(GP,:,:),0)-dim_avg_n(zos_JAS(:,:,:), 0)
+copy_VarCoords(zos_JAS(0,:,:), diffZP)
+
+FLG1 = prob2
+FLG1 = where(diffZP.gt.0.0,FLG1,0.0)
+FLG2 = prob2
+FLG2 = where(diffZP.lt.0.0,FLG2,0.0)
+
+tres2@cnFillColor           = "red"
+plot3(i) = gsn_csm_contour(wks, FLG1, tres2)
+tres2@cnFillColor           = "darkgreen"
+plot4(i) = gsn_csm_contour(wks, FLG2, tres2)
+
+
+
+    overlay(plot0(i),plot1(i))
+    overlay(plot0(i),plot2(i))
+    overlay(plot0(i),plot3(i))
+    overlay(plot0(i),plot4(i))
+
+
+    delete(GP)
+end do
+
+delete(res@cnLevels)
+;res@cnLevels             = (/-0.8,-0.6,-0.4,-0.3,-0.2,0.0,0.2,0.4,0.6,0.8/)
+
+
+
+
+pres = True
+pres@gsnMaximize      = True
+pres@gsnStringFont    = "times-bold"
+pres@lbLabelFont      = "times-bold"
+pres@gsnPanelLabelBar = True
+pres@lbBoxLinesOn     = False
+pres@lbLabelFontHeightF = 0.0135
+pres@lbBoxEndCapStyle = "TriangleBothEnds"
+pres@gsnPanelYWhiteSpacePercent = 2.5
+pres@pmLabelBarWidthF = 0.5
+
+
+gsn_panel(wks, plot0(0:1), (/2,1/), pres)
+
+
+end
+
