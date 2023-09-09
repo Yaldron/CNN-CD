@@ -21,7 +21,7 @@ Moreover, we found that **the sources for ENSO predictability at different lead 
 
     Data used in the assessments and analyses on the CNN-CD model.
 
-## model
+## Model
 
 * [Build_CNN-CD.py]
 
